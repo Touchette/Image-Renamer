@@ -1,8 +1,23 @@
 import os
+import re
 import sys
 import time
 
 
+# Natural sorting
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+
+def natural_keys(text):
+    '''
+    alist.sort(key=natural_keys) sorts in human order
+    http://nedbatchelder.com/blog/200712/human_sorting.html
+    '''
+    return [atoi(c) for c in re.split('(\d+)', text)]
+
+
+# Main program
 def main(root, name=False, customize=False):
     # Rename to specified filename if so desired
     if name and customize:
@@ -50,6 +65,7 @@ def main(root, name=False, customize=False):
     j = 0
 
     for dirName, subdirList, fileList in os.walk(root):
+        fileList.sort(key=natural_keys)
         print('Found directory: %s' % dirName)
 
         temp = dirName.split("\\")[-1]
@@ -84,6 +100,9 @@ def main(root, name=False, customize=False):
                 i += 1
                 continue
 
+            if f_split[-1] == "jpeg":
+                f_split[-1] = "jpg"
+
             oldname = '%s\\%s' % (dirName, fname)
             newname = '%s\\%s_%02d%s%s' % (dirName, temp, i, ".", f_split[-1])
 
@@ -94,14 +113,22 @@ def main(root, name=False, customize=False):
                 os.rename(oldname, newname)
                 j += 1
             except FileExistsError:
-                # print("Could not rename {}: already exists.".format(oldname))
-                new = '%s\\%s_%02d%s%s' % (dirName, temp, i + 1, ".",
-                                           f_split[-1])
-                try:
-                    os.rename(oldname, new)
-                    i += 1
-                except FileExistsError:
-                    print("\tTried again, still couldn't rename.")
+                # Handling Windows' ability to keep duplicate filenames
+                pngver = '%s\\%s_%02d%s%s' % (dirName, temp, i, ".", "png")
+                jpgver = '%s\\%s_%02d%s%s' % (dirName, temp, i, ".", "jpg")
+
+                if f_split[-1] == "jpg":
+                    if pngver in fileList:
+                        new = '%s\\%s_%02d%s%s' % (dirName, temp, i + 1, ".",
+                                                   f_split[-1])
+                        os.rename(oldname, new)
+                        i += 1
+                else:
+                    if jpgver in fileList:
+                        new = '%s\\%s_%02d%s%s' % (dirName, temp, i + 1, ".",
+                                                   f_split[-1])
+                        os.rename(oldname, new)
+                        i += 1
             except PermissionError:
                 print("Could not rename {}: no permissions.".format(oldname))
 
