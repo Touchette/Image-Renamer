@@ -79,7 +79,8 @@ def main(root, name=False, customize=False):
             f_split = fname.split('.')
             # Check for file extension to not rename dangerous shit
             if f_split[-1] not in extensions:
-                print("\tSorry, not going to rename that.")
+                print("\tSorry, not going to rename that {} file.".format(
+                    f_split[-1]))
                 i += 1
                 continue
 
@@ -93,7 +94,14 @@ def main(root, name=False, customize=False):
                 os.rename(oldname, newname)
                 j += 1
             except FileExistsError:
-                print("Could not rename {}: already exists.".format(oldname))
+                # print("Could not rename {}: already exists.".format(oldname))
+                new = '%s\\%s_%02d%s%s' % (dirName, temp, i + 1, ".",
+                                           f_split[-1])
+                try:
+                    os.rename(oldname, new)
+                    i += 1
+                except FileExistsError:
+                    print("\tTried again, still couldn't rename.")
             except PermissionError:
                 print("Could not rename {}: no permissions.".format(oldname))
 
