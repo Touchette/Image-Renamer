@@ -65,6 +65,7 @@ def main(root, name=False, customize=False):
     j = 0
 
     for dirName, subdirList, fileList in os.walk(root):
+        # print(fileList)
         fileList.sort(key=natural_keys)
         print('Found directory: %s' % dirName)
 
@@ -94,7 +95,9 @@ def main(root, name=False, customize=False):
         for fname in fileList:
             f_split = fname.split('.')
             # Check for file extension to not rename dangerous shit
-            if f_split[-1] not in extensions:
+            if f_split[-1].lower() not in extensions:
+                if f_split[-1].lower() == "ini":
+                    continue
                 print("\tSorry, not going to rename that \"{}\" file.".format(
                     f_split[-1]))
                 i += 1
@@ -103,8 +106,9 @@ def main(root, name=False, customize=False):
             if f_split[-1] == "jpeg":
                 f_split[-1] = "jpg"
 
+            extension = f_split[-1].lower()
             oldname = '%s\\%s' % (dirName, fname)
-            newname = '%s\\%s_%02d%s%s' % (dirName, temp, i, ".", f_split[-1])
+            newname = '%s\\%s_%02d%s%s' % (dirName, temp, i, ".", extension)
 
             print('\t%s' % fname + " is being renamed to {}.".format(
                 '%s_%02d%s%s' % (temp, i, ".", f_split[-1])))
