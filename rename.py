@@ -95,7 +95,7 @@ def main(root, name=False, customize=False):
             f_split = fname.split('.')
             # Check for file extension to not rename dangerous shit
             if f_split[-1] not in extensions:
-                print("\tSorry, not going to rename that {} file.".format(
+                print("\tSorry, not going to rename that \"{}\" file.".format(
                     f_split[-1]))
                 i += 1
                 continue
