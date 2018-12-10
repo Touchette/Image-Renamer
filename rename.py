@@ -4,9 +4,11 @@ import sys
 import time
 
 
-# Natural sorting
+# character to integer
 def atoi(text):
     return int(text) if text.isdigit() else text
+
+# Natural sorting
 
 
 def natural_keys(text):
@@ -30,7 +32,7 @@ def main(root, name=False, customize=False):
         print("\n*RENAMING FILES TO {}. USE ON ONLY ONE FOLDER.*".format(name))
 
         while (yes):
-            answer = input("CONTINUE? y/n: ")
+            answer = input("CONTINUE? y/n: (default 'n') ")
             if answer == 'n':
                 print("Quitting.")
                 return
@@ -38,7 +40,8 @@ def main(root, name=False, customize=False):
                 yes = False
                 continue
             else:
-                continue
+                print("Quitting.")
+                return
 
     if customize:
         yes = True
@@ -47,7 +50,7 @@ def main(root, name=False, customize=False):
               " for each subfolder when they are encountered.")
 
         while (yes):
-            answer = input("Continue? y/n: ")
+            answer = input("Continue? y/n (default 'n'): ")
             if answer == 'n':
                 print("Quitting.")
                 return
@@ -55,7 +58,8 @@ def main(root, name=False, customize=False):
                 yes = False
                 continue
             else:
-                continue
+                print("Quitting.")
+                return
 
     # Types of files to rename
     extensions = ['png', 'jpeg', 'jpg', 'gif', 'webm']
@@ -65,7 +69,6 @@ def main(root, name=False, customize=False):
     j = 0
 
     for dirName, subdirList, fileList in os.walk(root):
-        # print(fileList)
         fileList.sort(key=natural_keys)
         print('Found directory: %s' % dirName)
 
@@ -74,17 +77,20 @@ def main(root, name=False, customize=False):
         if customize:
             yes = True
             while (yes):
-                answer = input("\tCustomize folder {}? y/n: ".format(temp))
+                answer = input(
+                    "\tCustomize folder {temp}? y/n (default 'n'): ")
                 if answer == 'n':
                     print("\tContinuing.")
                     yes = False
                     continue
                 if answer == 'y':
                     temp = input("\tGive a filename: ")
-                    print("\tContinuing with filename {}.".format(temp))
+                    print("\tContinuing with filename {temp}.")
                     yes = False
                     continue
                 else:
+                    print("\tContinuing.")
+                    yes = False
                     continue
 
         if name:
@@ -103,6 +109,8 @@ def main(root, name=False, customize=False):
                 i += 1
                 continue
 
+            # don't want to deal with the "jpeg" file extension, so I'm going to rename
+            # it to jpg whether the user wants to or not. they're not different anyways
             if f_split[-1] == "jpeg":
                 f_split[-1] = "jpg"
 
@@ -134,7 +142,7 @@ def main(root, name=False, customize=False):
                         os.rename(oldname, new)
                         i += 1
             except PermissionError:
-                print("Could not rename {}: no permissions.".format(oldname))
+                print("Could not rename {oldname}: no permissions.")
 
             i += 1
 
