@@ -8,9 +8,8 @@ import time
 def atoi(text):
     return int(text) if text.isdigit() else text
 
+
 # Natural sorting
-
-
 def natural_keys(text):
     '''
     alist.sort(key=natural_keys) sorts in human order
