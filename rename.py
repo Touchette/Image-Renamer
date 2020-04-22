@@ -182,7 +182,7 @@ if __name__ == "__main__":
                 if os.path.isabs(arg1):
                     main(arg1)
                 else:
-                    print("helpmsg")
+                    print(helpmsg)
         elif argc < 4:
             if (arg2 == "customize"):
                 main(arg1, name=False, customize=arg2)
